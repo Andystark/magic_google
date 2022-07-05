@@ -8,6 +8,7 @@
 import pprint
 import random
 import time
+import re
 
 from magic_google import MagicGoogle
 
@@ -18,7 +19,12 @@ from magic_google import MagicGoogle
 # """
 #################################################
 
-PROXIES = [{"http": "http://127.0.0.1:1087", "https": "http://127.0.0.1:1087"}]
+PROXIES = [
+    {
+        #"http": "http://127.0.0.1:1088",
+        "https": "http://127.0.0.1:1088"
+    }
+]
 
 # Or MagicGoogle()
 mg = MagicGoogle(PROXIES)
@@ -30,10 +36,21 @@ mg = MagicGoogle(PROXIES)
 # time.sleep(random.randint(1, 5))
 
 # Get {'title','url','text'}
-for i in mg.search(query="python", num=1, language="en"):
-    pprint.pprint(i)
+def emailre(teststr):
+    email = re.compile(r'[a-zA-Z0-9\-\._]+@[0-9a-z\-\.]+')
+    emailset = set() #列表
+    for em in email.findall(teststr):
+        return em
 
-time.sleep(random.randint(1, 5))
+
+
+start = 0
+for start in range(1, 2):
+    for i in mg.search(query="site:Instagram.com  \"dubai\"    \"@gmail.com\"", start=start, num=1, language="en"):
+        i["email"] = emailre(i["text"])
+        pprint.pprint(i)
+        time.sleep(random.randint(5, 30))
+
 
 # Output
 # {'text': 'The official home of the Python Programming Language.',
@@ -41,10 +58,10 @@ time.sleep(random.randint(1, 5))
 # 'url': 'https://www.python.org/'}
 
 # Get first page
-for url in mg.search_url(query="python"):
-    pprint.pprint(url)
-
-time.sleep(random.randint(1, 5))
+# for url in mg.search_url(query="python"):
+#     pprint.pprint(url)
+#
+# time.sleep(random.randint(1, 5))
 
 # Output
 # 'https://www.python.org/'
@@ -60,8 +77,8 @@ time.sleep(random.randint(1, 5))
 # 'https://www.continuum.io/downloads'
 
 # Get second page
-for url in mg.search_url(query="python", start=10):
-    pprint.pprint(url)
+# for url in mg.search_url(query="python", start=10):
+#     pprint.pprint(url)
 
 # Output
 # 'https://github.com/python'
